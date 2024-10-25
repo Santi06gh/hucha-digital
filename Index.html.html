@@ -1,0 +1,1330 @@
+<html><head><base href="https://hucha-digital.com/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hucha Digital con Monedas</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            padding: 15px;
+            box-sizing: border-box;
+            background-color: #f0f0f0;
+        }
+        #huchaTitle {
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            color: #1a1a1a;
+            margin: 15px 0;
+        }
+        #huchaTitle:hover {
+            text-decoration: underline;
+        }
+        h1, h2 {
+            color: #1a1a1a;
+        }
+        .content-section h2 {
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+        #historial-section h2 {
+            margin-top: 60px;
+            margin-bottom: 20px;
+            text-align: center; 
+        }
+        .hucha-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 180px;
+            height: auto;
+            cursor: pointer;
+        }
+        .saldo {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .total-controls {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            max-width: 100%;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .total-amount {
+            flex: 1;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 15px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button {
+            padding: 0 15px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+            width: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .add {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .subtract {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .add:hover, .subtract:hover {
+            opacity: 0.9;
+        }
+        .total-amount {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .historial {
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .movimiento {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .movimiento:hover {
+            background-color: #f5f5f5;
+        }
+        .movimiento:last-child {
+            border-bottom: none;
+        }
+        .fecha {
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+        .cantidad {
+            font-weight: bold;
+        }
+        .cantidad.positiva {
+            color: #2ecc71;
+        }
+        .cantidad.negativa {
+            color: #e74c3c;
+        }
+        .editar, .eliminar {
+            background-color: #3498db;
+            color: white;
+            padding: 5px 10px;
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+        .eliminar {
+            background-color: #e74c3c;
+        }
+        .monedas-input {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            align-items: center;
+            max-width: 95%;
+            padding: 10px;
+        }
+        .moneda-input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.1em;
+            width: 100%;
+        }
+        .moneda-input label {
+            display: flex;
+            align-items: center;
+            width: 80px;
+            justify-content: flex-end;
+            padding-right: 5px;
+        }
+        .moneda-input input {
+            width: 50px;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .monedas-detalle {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .moneda-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .moneda-valor {
+            font-weight: bold;
+        }
+        .modal {
+            position: fixed;
+            z-index: 10002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 500px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-buttons button:first-child {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .modal-buttons button:last-child {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .filtros {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .filtros select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .periodo-filtro {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        .periodo-info {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .periodo-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .periodo-inputs input[type="date"] {
+            flex: 1;
+            min-width: 120px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #aceptarPeriodo {
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #periodoCalendario {
+            margin-top: 10px;
+        }
+        #resultadoPeriodo {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #resultadoPeriodo p {
+            margin: 5px 0;
+        }
+        #cantidadAñadida, #cantidadRetirada, #diferenciaPeriodo {
+            font-weight: bold;
+        }
+        .coin-image {
+            width: 25px;
+            height: 25px;
+            margin-right: 5px;
+        }
+        .moneda-item img {
+            width: 25px;
+            height: 25px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        .movimiento-detalles {
+            display: none;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .moneda-detalle {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .moneda-detalle img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        .moneda-detalle-cantidad {
+            margin-left: auto;
+            font-weight: bold;
+        }
+        .download-btn {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #3498db;
+        }
+        .image-selector-modal {
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-selector-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 600px;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .image-option {
+            cursor: pointer;
+            padding: 5px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        .image-option:hover {
+            border-color: #3498db;
+        }
+        .image-option img {
+            width: 100%;
+            height: auto;
+            border-radius: 3px;
+        }
+        .image-option.selected {
+            border-color: #2ecc71;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            z-index: 10001;
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+        }
+        .sidebar.active {
+            left: 0;
+            display: block;
+        }
+        .hamburger-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            z-index: 10001;
+            border: none;
+            padding: 0;
+            background-color: transparent;
+            width: 35px;
+            height: 35px;
+            transition: opacity 0.5s;
+        }
+        .main-content {
+            transition: 0.3s;
+            padding: 20px;
+        }
+        .sidebar-option {
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            text-align: left; 
+        }
+        .sidebar-option:hover {
+            background-color: #f0f0f0;
+        }
+        .content-section {
+            display: none;
+            width: 100%;
+            max-width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .content-section.active {
+            display: block;
+        }
+        #main-section {
+            text-align: center;
+            max-width: 100%;
+            padding: 10px;
+            margin: 0 auto;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/polyfills.umd.js"></script>
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <button class="hamburger-menu" onclick="toggleSidebar()">
+            <img src="/a/d7d4ca6c-bc3f-44f6-980f-b53272ec81aa" alt="Menu" width="35" height="35">
+        </button>
+
+        <div class="sidebar">
+            <button class="close-sidebar" onclick="toggleSidebar()">×</button>
+            <div class="sidebar-option" onclick="showSection('main')">Pantalla Principal</div>
+            <div class="sidebar-option" onclick="showSection('historial')">Historial de Movimientos</div>
+            <div class="sidebar-option" onclick="showSection('periodo')">Filtrar por Fecha</div>
+            <div class="sidebar-option" onclick="showSection('descargar')">Descargar Historial</div>
+        </div>
+
+        <div id="main-section" class="content-section active">
+            <h1 id="huchaTitle" onclick="editTitle()">Hucha Digital</h1>
+            <img src="/a/e11e402f-8887-4170-b8a6-6058206f8492" alt="Hucha (piggy bank)" class="hucha-image">
+            <div class="saldo" id="saldo" onclick="toggleMonedasDetalle()">Saldo: €0.00</div>
+            <div id="monedas-detalle" class="monedas-detalle"></div>
+            <div class="controls">
+                <div class="total-controls">
+                    <div id="total-amount" class="total-amount">Total: €0.00</div>
+                    <button class="add" onclick="addMoney()">Añadir</button>
+                    <button class="subtract" onclick="subtractMoney()">Retirar</button>
+                </div>
+            </div>
+            <div class="monedas-input" id="monedas-input">
+                <div class="moneda-input">
+                    <label for="moneda2e">2€ <img src="/a/168dabcb-5a23-4bbc-a902-509aca7a920b" alt="2 euro coin" class="coin-image">:</label>
+                    <input type="number" id="moneda2e" min="0" value="0">
+                </div>
+                <div class="moneda-input">
+                    <label for="moneda1e">1€ <img src="/a/9178399b-aae0-405f-8451-2fe0afc54c6a" alt="1 euro coin" class="coin-image">:</label>
+                    <input type="number" id="moneda1e" min="0" value="0">
+                </div>
+                <div class="moneda-input">
+                    <label for="moneda50c">50c <img src="/a/1bceee15-15ac-4993-8b52-6bdd72722f66" alt="50 cent coin" class="coin-image">:</label>
+                    <input type="number" id="moneda50c" min="0" value="0">
+                </div>
+                <div class="moneda-input">
+                    <label for="moneda20c">20c <img src="/a/c91b8f93-47ba-4dde-9f39-ae1cf2bc2f39" alt="20 cent coin" class="coin-image">:</label>
+                    <input type="number" id="moneda20c" min="0" value="0">
+                </div>
+                <div class="moneda-input">
+                    <label for="moneda10c">10c <img src="/a/b1c6cd54-abf5-431d-bd49-c9391f9d4044" alt="10 cent coin" class="coin-image">:</label>
+                    <input type="number" id="moneda10c" min="0" value="0">
+                </div>
+                <div class="moneda-input">
+                    <label for="moneda5c">5c <img src="/a/af9d120a-7eec-4805-97b5-0f9a1680091f" alt="5 cent coin" class="coin-image">:</label>
+                    <input type="number" id="moneda5c" min="0" value="0">
+                </div>
+                <div class="moneda-input">
+                    <label for="moneda2c">2c <img src="/a/945159d2-01d8-4c70-af7c-4ce87ba7113b" alt="2 cent coin" class="coin-image">:</label>
+                    <input type="number" id="moneda2c" min="0" value="0">
+                </div>
+                <div class="moneda-input">
+                    <label for="moneda1c">1c <img src="/a/f172610e-7b15-4a67-adae-6477bdfdeabc" alt="1 cent coin" class="coin-image">:</label>
+                    <input type="number" id="moneda1c" min="0" value="0">
+                </div>
+            </div>
+        </div>
+
+        <div id="historial-section" class="content-section">
+            <h2>Historial de Movimientos</h2>
+            <div class="filtros">
+                <select id="filterPeriod">
+                    <option value="month">Mes</option>
+                    <option value="week">Semana</option>
+                </select>
+                <select id="filterMonth">
+                    <option value="">Todos los meses</option>
+                    <option value="0">Enero</option>
+                    <option value="1">Febrero</option>
+                    <option value="2">Marzo</option>
+                    <option value="3">Abril</option>
+                    <option value="4">Mayo</option>
+                    <option value="5">Junio</option>
+                    <option value="6">Julio</option>
+                    <option value="7">Agosto</option>
+                    <option value="8">Septiembre</option>
+                    <option value="9">Octubre</option>
+                    <option value="10">Noviembre</option>
+                    <option value="11">Diciembre</option>
+                </select>
+                <select id="filterWeek" style="display:none;">
+                    <option value="">Todas las semanas</option>
+                </select>
+                <select id="filterYear">
+                    <option value="">Todos los años</option>
+                </select>
+            </div>
+            <div class="historial" id="historial"></div>
+        </div>
+
+        <div id="periodo-section" class="content-section">
+            <h2>Filtrar por fecha</h2>
+            <div class="periodo-filtro">
+                <div class="periodo-info">Filtrar por fecha:</div>
+                <div class="periodo-inputs">
+                    <input type="date" id="fechaInicio" placeholder="Fecha inicio">
+                    <input type="date" id="fechaFin" placeholder="Fecha fin">
+                    <button id="aceptarPeriodo">Aceptar</button>
+                </div>
+            </div>
+            <div id="resultadoPeriodo" style="display: none;">
+                <h4>Resumen del periodo</h4>
+                <p>Cantidad añadida: <span id="cantidadAñadida"></span></p>
+                <p>Cantidad retirada: <span id="cantidadRetirada"></span></p>
+                <p>Diferencia: <span id="diferenciaPeriodo"></span></p>
+            </div>
+        </div>
+
+        <div id="descargar-section" class="content-section">
+            <h2>Descargar historial</h2>
+            <div class="periodo-filtro">
+                <div class="periodo-info">Selecciona el periodo:</div>
+                <div class="periodo-inputs">
+                    <input type="date" id="pdfFechaInicio" placeholder="Fecha inicio">
+                    <input type="date" id="pdfFechaFin" placeholder="Fecha fin">
+                    <button id="descargarPDF" class="download-btn">Descargar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let saldo = 0;
+        let movimientos = [];
+        let filteredMovimientos = [];
+        let monedas = {
+            '2e': 0, '1e': 0, '50c': 0, '20c': 0, '10c': 0, '5c': 0, '2c': 0, '1c': 0
+        };
+
+        function editTitle() {
+            const title = document.getElementById('huchaTitle');
+            const currentTitle = title.innerText;
+            
+            title.innerHTML = `<input type="text" id="titleInput" value="${currentTitle}">`;
+            const input = document.getElementById('titleInput');
+            input.focus();
+            input.select();
+
+            input.addEventListener('blur', guardarTitulo);
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    guardarTitulo();
+                }
+            });
+        }
+
+        function guardarTitulo() {
+            const input = document.getElementById('titleInput');
+            const title = document.getElementById('huchaTitle');
+            const newTitle = input.value.trim();
+            
+            if (newTitle) {
+                title.innerText = newTitle;
+            } else {
+                title.innerText = 'Hucha Digital';
+            }
+        }
+
+        function actualizarSaldo() {
+            document.getElementById('saldo').innerText = `Saldo: €${saldo.toFixed(2)}`;
+            actualizarMonedasDetalle();
+        }
+
+        function actualizarMonedasDetalle() {
+            const detalleElement = document.getElementById('monedas-detalle');
+            detalleElement.innerHTML = '';
+            
+            const monedasOrden = ['2e', '1e', '50c', '20c', '10c', '5c', '2c', '1c'];
+            const monedasNombres = {
+                '2e': '2 euros', '1e': '1 euro', '50c': '50 céntimos', '20c': '20 céntimos',
+                '10c': '10 céntimos', '5c': '5 céntimos', '2c': '2 céntimos', '1c': '1 céntimo'
+            };
+            const monedasValores = {
+                '2e': 2, '1e': 1, '50c': 0.5, '20c': 0.2, '10c': 0.1, '5c': 0.05, '2c': 0.02, '1c': 0.01
+            };
+
+            monedasOrden.forEach(moneda => {
+                const cantidad = monedas[moneda];
+                const valorTotal = cantidad * monedasValores[moneda];
+                const monedaItem = document.createElement('div');
+                monedaItem.className = 'moneda-item';
+                monedaItem.innerHTML = `
+                    <span>${moneda === '2e' ? '<img src="/a/168dabcb-5a23-4bbc-a902-509aca7a920b" alt="2 euro coin" class="coin-image">' : 
+                           moneda === '1e' ? '<img src="/a/9178399b-aae0-405f-8451-2fe0afc54c6a" alt="1 euro coin" class="coin-image">' : 
+                           moneda === '50c' ? '<img src="/a/1bceee15-15ac-4993-8b52-6bdd72722f66" alt="50 cent coin" class="coin-image">' : 
+                           moneda === '20c' ? '<img src="/a/c91b8f93-47ba-4dde-9f39-ae1cf2bc2f39" alt="20 cent coin" class="coin-image">' : 
+                           moneda === '10c' ? '<img src="/a/b1c6cd54-abf5-431d-bd49-c9391f9d4044" alt="10 cent coin" class="coin-image">' : 
+                           moneda === '5c' ? '<img src="/a/af9d120a-7eec-4805-97b5-0f9a1680091f" alt="5 cent coin" class="coin-image">' : 
+                           moneda === '2c' ? '<img src="/a/945159d2-01d8-4c70-af7c-4ce87ba7113b" alt="2 cent coin" class="coin-image">' : 
+                           moneda === '1c' ? '<img src="/a/f172610e-7b15-4a67-adae-6477bdfdeabc" alt="1 cent coin" class="coin-image">' : 
+                           ''}${monedasNombres[moneda]}:</span>
+                    <span class="moneda-valor">${cantidad} (${valorTotal.toFixed(2)}€)</span>
+                `;
+                detalleElement.appendChild(monedaItem);
+            });
+        }
+
+        function toggleMonedasDetalle() {
+            const detalleElement = document.getElementById('monedas-detalle');
+            if (detalleElement.style.display === 'none' || detalleElement.style.display === '') {
+                detalleElement.style.display = 'block';
+                actualizarMonedasDetalle();
+            } else {
+                detalleElement.style.display = 'none';
+            }
+        }
+
+        function updateTotalAmount() {
+            const total = calcularCantidadTotal();
+            document.getElementById('total-amount').innerText = `Total: €${total.toFixed(2)}`;
+        }
+
+        function addEventListenersToInputs() {
+            const inputs = document.querySelectorAll('.moneda-input input');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateTotalAmount);
+            });
+        }
+
+        addEventListenersToInputs();
+
+        function registrarMovimiento(cantidad) {
+            const fecha = new Date();
+            const monedasMovimiento = {};
+            Object.keys(monedas).forEach(moneda => {
+                const valor = parseInt(document.getElementById(`moneda${moneda}`).value);
+                monedasMovimiento[moneda] = valor;
+                if (cantidad > 0) {
+                    monedas[moneda] += valor;
+                } else {
+                    monedas[moneda] -= valor;
+                }
+            });
+            movimientos.push({
+                id: Date.now(),
+                cantidad: cantidad,
+                fecha: fecha,
+                monedas: monedasMovimiento
+            });
+            saldo += cantidad;
+            ordenarMovimientos();
+            aplicarFiltros();
+            actualizarSaldo();
+        }
+
+        function eliminarMovimiento(index) {
+            if (confirm('¿Estás seguro de que quieres eliminar este movimiento?')) {
+                const movimiento = movimientos[index];
+                const nuevoSaldo = saldo - movimiento.cantidad;
+
+                if (nuevoSaldo < 0) {
+                    alert('No se puede eliminar este movimiento porque resultaría en un saldo negativo.');
+                    return;
+                }
+
+                for (let tipo in movimiento.monedas) {
+                    if (movimiento.cantidad > 0) {
+                        monedas[tipo] -= movimiento.monedas[tipo];
+                    } else {
+                        monedas[tipo] += movimiento.monedas[tipo];
+                    }
+                }
+                
+                saldo = nuevoSaldo;
+                movimientos.splice(index, 1);
+                actualizarSaldo();
+                aplicarFiltros();
+            }
+        }
+
+        function addMoney() {
+            const cantidad = calcularCantidadTotal();
+            if (cantidad <= 0) {
+                alert('Por favor, introduce una cantidad válida de monedas.');
+                return;
+            }
+            registrarMovimiento(cantidad);
+            limpiarInputsMonedas();
+            updateTotalAmount();
+        }
+
+        function subtractMoney() {
+            const cantidad = calcularCantidadTotal();
+            if (cantidad <= 0) {
+                alert('Por favor, introduce una cantidad válida de monedas.');
+                return;
+            }
+            if (cantidad > saldo) {
+                alert('No tienes suficiente saldo para realizar esta operación.');
+                return;
+            }
+            if (!tienesSuficientesMonedas()) {
+                alert('No tienes suficientes monedas del tipo especificado para realizar esta operación.');
+                return;
+            }
+            registrarMovimiento(-cantidad);
+            limpiarInputsMonedas();
+            updateTotalAmount();
+        }
+
+        function calcularCantidadTotal() {
+            return (
+                parseInt(document.getElementById('moneda2e').value) * 2 +
+                parseInt(document.getElementById('moneda1e').value) +
+                parseInt(document.getElementById('moneda50c').value) * 0.5 +
+                parseInt(document.getElementById('moneda20c').value) * 0.2 +
+                parseInt(document.getElementById('moneda10c').value) * 0.1 +
+                parseInt(document.getElementById('moneda5c').value) * 0.05 +
+                parseInt(document.getElementById('moneda2c').value) * 0.02 +
+                parseInt(document.getElementById('moneda1c').value) * 0.01
+            );
+        }
+
+        function tienesSuficientesMonedas() {
+            return (
+                monedas['2e'] >= parseInt(document.getElementById('moneda2e').value) &&
+                monedas['1e'] >= parseInt(document.getElementById('moneda1e').value) &&
+                monedas['50c'] >= parseInt(document.getElementById('moneda50c').value) &&
+                monedas['20c'] >= parseInt(document.getElementById('moneda20c').value) &&
+                monedas['10c'] >= parseInt(document.getElementById('moneda10c').value) &&
+                monedas['5c'] >= parseInt(document.getElementById('moneda5c').value) &&
+                monedas['2c'] >= parseInt(document.getElementById('moneda2c').value) &&
+                monedas['1c'] >= parseInt(document.getElementById('moneda1c').value)
+            );
+        }
+
+        function limpiarInputsMonedas() {
+            document.getElementById('moneda2e').value = '0';
+            document.getElementById('moneda1e').value = '0';
+            document.getElementById('moneda50c').value = '0';
+            document.getElementById('moneda20c').value = '0';
+            document.getElementById('moneda10c').value = '0';
+            document.getElementById('moneda5c').value = '0';
+            document.getElementById('moneda2c').value = '0';
+            document.getElementById('moneda1c').value = '0';
+            updateTotalAmount();
+        }
+
+        function guardarEdicionMonedas(index) {
+            const nuevaFechaHora = document.getElementById('editar-fecha-hora').value;
+            if (!nuevaFechaHora) {
+                alert('Por favor, especifica la fecha y hora antes de guardar.');
+                return;
+            }
+
+            const movimiento = movimientos[index];
+            const nuevasMonedas = {};
+            let nuevaCantidad = 0;
+
+            Object.keys(movimiento.monedas).forEach(moneda => {
+                const cantidad = parseInt(document.getElementById(`editar-${moneda}`).value);
+                nuevasMonedas[moneda] = cantidad;
+                nuevaCantidad += cantidad * (moneda === '2e' ? 2 : moneda === '1e' ? 1 : parseFloat(moneda) / 100);
+            });
+
+            const diferencia = nuevaCantidad - Math.abs(movimiento.cantidad);
+            const nuevoSaldo = saldo + (movimiento.cantidad > 0 ? diferencia : -diferencia);
+
+            if (nuevoSaldo < 0) {
+                alert('No se puede editar el movimiento porque resultaría en un saldo negativo.');
+                return;
+            }
+
+            const monedasTemp = {...monedas};
+            Object.keys(movimiento.monedas).forEach(moneda => {
+                const diferencia = nuevasMonedas[moneda] - movimiento.monedas[moneda];
+                monedasTemp[moneda] += diferencia;
+                if (monedasTemp[moneda] < 0) {
+                    alert('No hay suficientes monedas para realizar esta modificación.');
+                    return;
+                }
+            });
+
+            Object.keys(movimiento.monedas).forEach(moneda => {
+                const diferencia = nuevasMonedas[moneda] - movimiento.monedas[moneda];
+                monedas[moneda] += diferencia;
+            });
+
+            saldo = nuevoSaldo;
+            movimiento.cantidad = movimiento.cantidad > 0 ? nuevaCantidad : -nuevaCantidad;
+            movimiento.monedas = nuevasMonedas;
+            movimiento.fecha = new Date(nuevaFechaHora);
+
+            actualizarSaldo();
+            ordenarMovimientos();
+            aplicarFiltros();
+            cerrarModal();
+        }
+
+        function editarMovimiento(index) {
+            const movimiento = movimientos[index];
+            mostrarEdicionMonedas(movimiento, index);
+        }
+
+        function mostrarEdicionMonedas(movimiento, index) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>Editar Movimiento</h3>
+                    <div class="monedas-input" id="editar-monedas-input">
+                        ${Object.entries(movimiento.monedas).map(([moneda, cantidad]) => `
+                            <div class="moneda-input">
+                                <label for="editar-${moneda}">${moneda}:</label>
+                                <input type="number" id="editar-${moneda}" min="0" value="${cantidad}">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="fecha-hora-input">
+                        <label for="editar-fecha-hora">Fecha y Hora:</label>
+                        <input type="datetime-local" id="editar-fecha-hora" placeholder="Selecciona fecha y hora">
+                    </div>
+                    <div class="modal-buttons">
+                        <button onclick="guardarEdicionMonedas(${index})">Guardar</button>
+                        <button onclick="cerrarModal()">Cancelar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function ordenarMovimientos() {
+            movimientos.sort((a, b) => b.fecha - a.fecha);
+        }
+
+        function aplicarFiltros() {
+            const periodFilter = document.getElementById('filterPeriod').value;
+            const monthFilter = document.getElementById('filterMonth').value;
+            const weekFilter = document.getElementById('filterWeek').value;
+            const yearFilter = document.getElementById('filterYear').value;
+
+            if (monthFilter === '' && weekFilter === '' && yearFilter === '') {
+                filteredMovimientos = movimientos;
+            } else {
+                filteredMovimientos = movimientos.filter(movimiento => {
+                    const fecha = new Date(movimiento.fecha);
+                    const cumpleAnio = yearFilter === '' || fecha.getFullYear().toString() === yearFilter;
+                    
+                    if (periodFilter === 'week') {
+                        const weekNumber = getWeekNumber(fecha);
+                        return weekFilter === '' || (weekNumber.toString() === weekFilter.split('-')[1] && fecha.getFullYear().toString() === weekFilter.split('-')[0]);
+                    } else {
+                        return (monthFilter === '' || fecha.getMonth().toString() === monthFilter) && cumpleAnio;
+                    }
+                });
+            }
+
+            actualizarHistorial();
+        }
+
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+            return weekNo;
+        }
+
+        function inicializarFiltros() {
+            const yearSelect = document.getElementById('filterYear');
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= currentYear - 5; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+
+            const periodSelect = document.getElementById('filterPeriod');
+            const weekSelect = document.getElementById('filterWeek');
+            const monthSelect = document.getElementById('filterMonth');
+
+            periodSelect.addEventListener('change', function() {
+                if (this.value === 'week') {
+                    weekSelect.style.display = 'inline-block';
+                    monthSelect.style.display = 'none';
+                } else {
+                    weekSelect.style.display = 'none';
+                    monthSelect.style.display = 'inline-block';
+                }
+                aplicarFiltros();
+            });
+            weekSelect.addEventListener('change', aplicarFiltros);
+
+            actualizarOpcionesSemanas(currentYear);
+
+            document.getElementById('filterMonth').addEventListener('change', aplicarFiltros);
+            yearSelect.addEventListener('change', function() {
+                actualizarOpcionesSemanas(this.value);
+                aplicarFiltros();
+            });
+        }
+
+        function actualizarOpcionesSemanas(year) {
+            const weekSelect = document.getElementById('filterWeek');
+            weekSelect.innerHTML = '<option value="">Todas las semanas</option>';
+            const numWeeks = getWeeksInYear(year);
+            for (let i = 1; i <= numWeeks; i++) {
+                const option = document.createElement('option');
+                option.value = `${year}-${i}`;
+                option.textContent = `${year} - Semana ${i}`;
+                weekSelect.appendChild(option);
+            }
+        }
+
+        function getWeeksInYear(year) {
+            const d = new Date(year, 11, 31);
+            const week = getWeekNumber(d);
+            return week === 1 ? 52 : week;
+        }
+
+        function actualizarHistorial() {
+            const historialElement = document.getElementById('historial');
+            historialElement.innerHTML = '';
+            filteredMovimientos.forEach((movimiento, index) => {
+                const movimientoContainer = document.createElement('div');
+                const movimientoElement = document.createElement('div');
+                const detallesElement = document.createElement('div');
+                
+                movimientoContainer.className = 'movimiento-container';
+                movimientoElement.className = 'movimiento';
+                detallesElement.className = 'movimiento-detalles';
+                
+                movimientoElement.innerHTML = `
+                    <span class="fecha">${formatearFecha(movimiento.fecha)}</span>
+                    <span class="cantidad ${movimiento.cantidad > 0 ? 'positiva' : 'negativa'}">
+                        €${Math.abs(movimiento.cantidad).toFixed(2)}
+                    </span>
+                    <button class="editar" onclick="event.stopPropagation(); editarMovimiento(${movimientos.indexOf(movimiento)})">Editar</button>
+                    <button class="eliminar" onclick="event.stopPropagation(); eliminarMovimiento(${movimientos.indexOf(movimiento)})">Eliminar</button>
+                `;
+
+                const monedasMapping = {
+                    '2e': { text: '2 euros', img: '/a/168dabcb-5a23-4bbc-a902-509aca7a920b' },
+                    '1e': { text: '1 euro', img: '/a/9178399b-aae0-405f-8451-2fe0afc54c6a' },
+                    '50c': { text: '50 céntimos', img: '/a/1bceee15-15ac-4993-8b52-6bdd72722f66' },
+                    '20c': { text: '20 céntimos', img: '/a/c91b8f93-47ba-4dde-9f39-ae1cf2bc2f39' },
+                    '10c': { text: '10 céntimos', img: '/a/b1c6cd54-abf5-431d-bd49-c9391f9d4044' },
+                    '5c': { text: '5 céntimos', img: '/a/af9d120a-7eec-4805-97b5-0f9a1680091f' },
+                    '2c': { text: '2 céntimos', img: '/a/945159d2-01d8-4c70-af7c-4ce87ba7113b' },
+                    '1c': { text: '1 céntimo', img: '/a/f172610e-7b15-4a67-adae-6477bdfdeabc' }
+                };
+
+                detallesElement.innerHTML = Object.entries(movimiento.monedas)
+                    .filter(([_, cantidad]) => cantidad > 0)
+                    .map(([moneda, cantidad]) => `
+                        <div class="moneda-detalle">
+                            <img src="${monedasMapping[moneda].img}" alt="${monedasMapping[moneda].text}">
+                            <span>${monedasMapping[moneda].text}</span>
+                            <span class="moneda-detalle-cantidad">x${cantidad}</span>
+                        </div>
+                    `).join('');
+
+                movimientoElement.addEventListener('click', () => {
+                    const isVisible = detallesElement.style.display === 'block';
+                    detallesElement.style.display = isVisible ? 'none' : 'block';
+                });
+
+                movimientoContainer.appendChild(movimientoElement);
+                movimientoContainer.appendChild(detallesElement);
+                historialElement.appendChild(movimientoContainer);
+            });
+        }
+
+        function formatearFecha(fecha) {
+            const dia = fecha.getDate().toString().padStart(2, '0');
+            const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+            const anio = fecha.getFullYear();
+            const horas = fecha.getHours().toString().padStart(2, '0');
+            const minutos = fecha.getMinutes().toString().padStart(2, '0');
+            return `${dia}-${mes}-${anio} ${horas}:${minutos}`;
+        }
+
+        function cerrarModal() {
+            const modal = document.querySelector('.modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function inicializarFiltroPeriodo() {
+            const aceptarPeriodoBtn = document.getElementById('aceptarPeriodo');
+            aceptarPeriodoBtn.addEventListener('click', calcularResumenPeriodo);
+        }
+
+        function calcularResumenPeriodo() {
+            const fechaInicio = new Date(document.getElementById('fechaInicio').value);
+            const fechaFin = new Date(document.getElementById('fechaFin').value);
+
+            if (isNaN(fechaInicio.getTime()) || isNaN(fechaFin.getTime())) {
+                alert('Por favor, selecciona fechas válidas para el periodo.');
+                return;
+            }
+
+            fechaInicio.setHours(0, 0, 0, 0);
+            fechaFin.setHours(23, 59, 59, 999);
+
+            let cantidadAñadida = 0;
+            let cantidadRetirada = 0;
+
+            movimientos.forEach(movimiento => {
+                const fechaMovimiento = new Date(movimiento.fecha);
+                if (fechaMovimiento >= fechaInicio && fechaMovimiento <= fechaFin) {
+                    if (movimiento.cantidad > 0) {
+                        cantidadAñadida += movimiento.cantidad;
+                    } else {
+                        cantidadRetirada += Math.abs(movimiento.cantidad);
+                    }
+                }
+            });
+
+            const diferencia = cantidadAñadida - cantidadRetirada;
+
+            document.getElementById('cantidadAñadida').textContent = `€${cantidadAñadida.toFixed(2)}`;
+            document.getElementById('cantidadRetirada').textContent = `€${cantidadRetirada.toFixed(2)}`;
+            document.getElementById('diferenciaPeriodo').textContent = `€${diferencia.toFixed(2)}`;
+
+            document.getElementById('resultadoPeriodo').style.display = 'block';
+        }
+
+        function generarPDF() {
+            if (typeof window.jspdf === 'undefined') {
+                console.error('jsPDF library not loaded');
+                alert('Error: Could not generate PDF. Please try again.');
+                return;
+            }
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const fechaInicio = new Date(document.getElementById('pdfFechaInicio').value);
+                const fechaFin = new Date(document.getElementById('pdfFechaFin').value);
+
+                if (isNaN(fechaInicio.getTime()) || isNaN(fechaFin.getTime())) {
+                    alert('Por favor, selecciona fechas válidas para la descarga.');
+                    return;
+                }
+
+                fechaInicio.setHours(0, 0, 0, 0);
+                fechaFin.setHours(23, 59, 59, 999);
+
+                doc.setFont('times', 'normal');
+                doc.setFontSize(12);
+
+                const titulo = document.getElementById('huchaTitle').innerText;
+                doc.setFontSize(16);
+                doc.text(titulo, 105, 20, { align: 'center' });
+
+                doc.setFontSize(12);
+                doc.text(`Periodo: ${fechaInicio.toLocaleDateString()} - ${fechaFin.toLocaleDateString()}`, 105, 30, { align: 'center' });
+
+                const headers = ['Fecha', 'Cantidad', 'Tipo'];
+                let y = 40;
+                
+                doc.setFillColor(200, 220, 255);
+                doc.rect(10, y, 190, 10, 'F');
+                doc.setTextColor(0);
+                doc.text(headers[0], 15, y + 7);
+                doc.text(headers[1], 85, y + 7);
+                doc.text(headers[2], 155, y + 7);
+                
+                y += 15;
+
+                const movimientosPeriodo = movimientos.filter(mov => {
+                    const fechaMov = new Date(mov.fecha);
+                    return fechaMov >= fechaInicio && fechaMov <= fechaFin;
+                }).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+                movimientosPeriodo.forEach((movimiento) => {
+                    if (y > 250) {
+                        doc.addPage();
+                        y = 20;
+                    }
+
+                    const fecha = formatearFecha(new Date(movimiento.fecha));
+                    const cantidad = `€${Math.abs(movimiento.cantidad).toFixed(2)}`;
+                    const tipo = movimiento.cantidad > 0 ? 'Ingreso' : 'Retiro';
+
+                    doc.setTextColor(movimiento.cantidad > 0 ? 0 : 255, 0, 0);
+                    
+                    doc.text(fecha, 15, y);
+                    doc.text(cantidad, 85, y);
+                    doc.text(tipo, 155, y);
+                    
+                    doc.setTextColor(0);
+                    
+                    y += 10;
+                });
+
+                let totalIngresos = 0;
+                let totalRetiros = 0;
+                movimientosPeriodo.forEach(mov => {
+                    if (mov.cantidad > 0) {
+                        totalIngresos += mov.cantidad;
+                    } else {
+                        totalRetiros += Math.abs(mov.cantidad);
+                    }
+                });
+
+                y += 10;
+                doc.setFontSize(12);
+                doc.setTextColor(0);
+                doc.text(`Total Ingresos: €${totalIngresos.toFixed(2)}`, 15, y);
+                y += 10;
+                doc.text(`Total Retiros: €${totalRetiros.toFixed(2)}`, 15, y);
+                y += 10;
+                doc.text(`Balance: €${(totalIngresos - totalRetiros).toFixed(2)}`, 15, y);
+
+                try {
+                    doc.save(`${titulo}_historial_${fechaInicio.toISOString().split('T')[0]}_${fechaFin.toISOString().split('T')[0]}.pdf`);
+                } catch (saveError) {
+                    console.error('Error saving PDF:', saveError);
+                    alert('Error al guardar el PDF. Por favor, inténtalo de nuevo.');
+                }
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error al generar el PDF. Por favor, inténtalo de nuevo.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('descargarPDF').addEventListener('click', generarPDF);
+            const huchaImage = document.querySelector('.hucha-image');
+            huchaImage.addEventListener('click', mostrarSelectorImagen);
+        });
+
+        function mostrarSelectorImagen() {
+            const modal = document.createElement('div');
+            modal.className = 'image-selector-modal';
+            
+            modal.innerHTML = `
+                <div class="image-selector-content">
+                    <h3>Selecciona una imagen para tu hucha</h3>
+                    <div class="upload-section" style="margin: 20px 0; text-align: center;">
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        <button onclick="document.getElementById('imageUpload').click()" 
+                            style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Seleccionar imagen del dispositivo
+                        </button>
+                    </div>
+                    <p style="text-align: center; color: #666;">- o usa la imagen predeterminada -</p>
+                    <div class="image-grid">
+                        <div class="image-option" onclick="seleccionarImagen('/a/e11e402f-8887-4170-b8a6-6058206f8492', this)">
+                            <img src="/a/e11e402f-8887-4170-b8a6-6058206f8492" alt="Hucha clásica">
+                        </div>
+                    </div>
+                    <div class="modal-buttons">
+                        <button onclick="guardarImagenSeleccionada()">Guardar</button>
+                        <button onclick="cerrarSelectorImagen()">Cancelar</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previousSelected = document.querySelector('.image-option.selected');
+                    if (previousSelected) {
+                        previousSelected.classList.remove('selected');
+                    }
+                    window.selectedImageSrc = e.target.result;
+                    
+                    const huchaImage = document.querySelector('.hucha-image');
+                    huchaImage.src = e.target.result;
+                    
+                    cerrarSelectorImagen();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function seleccionarImagen(src, element) {
+            const previousSelected = document.querySelector('.image-option.selected');
+            if (previousSelected) {
+                previousSelected.classList.remove('selected');
+            }
+            
+            element.classList.add('selected');
+            window.selectedImageSrc = src;
+        }
+
+        function guardarImagenSeleccionada() {
+            if (window.selectedImageSrc) {
+                const huchaImage = document.querySelector('.hucha-image');
+                huchaImage.src = window.selectedImageSrc;
+            }
+            cerrarSelectorImagen();
+        }
+
+        function cerrarSelectorImagen() {
+            const modal = document.querySelector('.image-selector-modal');
+            if (modal) {
+                modal.remove();
+            }
+            window.selectedImageSrc = null;
+        }
+
+        inicializarFiltros();
+        inicializarFiltroPeriodo();
+        aplicarFiltros();
+        actualizarSaldo();
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            
+            if (sidebar.style.display === 'none' || sidebar.style.display === '') {
+                sidebar.style.display = 'block';
+                hamburgerMenu.style.opacity = '0';
+                setTimeout(() => {
+                    sidebar.classList.add('active');
+                }, 10);
+            } else {
+                sidebar.classList.remove('active');
+                hamburgerMenu.style.opacity = '1';
+                setTimeout(() => {
+                    sidebar.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const selectedSection = document.getElementById(sectionId + '-section');
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            
+            if (!sidebar.contains(event.target) && !hamburgerMenu.contains(event.target) && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
+        });
+    </script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+            console.log('ServiceWorker registered with scope:', registration.scope);
+          }, function(err) {
+            console.log('ServiceWorker registration failed:', err);
+          });
+        });
+      }
+    </script>
+    </body>
+    </html>
